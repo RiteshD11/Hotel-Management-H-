@@ -1,6 +1,5 @@
 package com.Hotel_Management.SequrityConfiguration;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,15 +25,14 @@ import java.util.List;
 @Configuration
 public class Sequrity {
 
-@Autowired
-private ApplicationContext context;
+    @Autowired
+    private ApplicationContext context;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http){
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
 
-
-        http.
-                cors(Customizer.withDefaults())
-                .csrf(customiser->customiser.disable())
+        http.cors(Customizer.withDefaults())
+                .csrf(customiser -> customiser.disable())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
                                 "/auth/send-otp",
@@ -42,10 +40,10 @@ private ApplicationContext context;
                                 "/auth/login",
                                 "/auth/register",
                                 "/auth/register-admin",
-                                "/auth/set-profile"
-                        ).permitAll()
+                                "/auth/set-profile")
+                        .permitAll()
 
-//                        .requestMatchers("/auth/set-profile").authenticated()
+                        // .requestMatchers("/auth/set-profile").authenticated()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/user/**").hasRole("USER")
@@ -53,34 +51,40 @@ private ApplicationContext context;
                         .requestMatchers("/api/bookings/**").authenticated()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(context.getBean(jwtFilter.class), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
     @Autowired
-    private UserDetailsService  userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
 
-        DaoAuthenticationProvider provider=new DaoAuthenticationProvider(userDetailsService);
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
 
         provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
         return provider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration){
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) {
         return configuration.getAuthenticationManager();
     }
 
     @Bean
+
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "https://hotel-management-h.vercel.app"));
+
+        config.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
@@ -89,4 +93,5 @@ private ApplicationContext context;
 
         return source;
     }
+
 }
