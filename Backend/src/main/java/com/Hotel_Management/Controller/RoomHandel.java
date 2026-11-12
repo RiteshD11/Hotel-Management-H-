@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
+// @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
 public class RoomHandel {
 
     @Autowired

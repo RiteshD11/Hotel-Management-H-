@@ -26,7 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 
-@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
+// @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
 public class UserRegistration {
 
     @Autowired
